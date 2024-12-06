@@ -1,0 +1,84 @@
+"""
+command list
+"""
+
+# pth test 
+python /mnt/kneron-mmdetection-main/tools/test_kneron.py \
+    /mnt/kneron-mmdetection-main/configs/yolox/yolox_s_8x8_300e_ours_img_norm.py \
+    /mnt/models/kneron_yolox_wade_epoch119_best.pth \
+    --eval bbox \
+    --out-kneron json/output_pth_11.json \
+    --show \
+    --show-dir json/pth_kneron_yolox_wade_epoch119_best
+
+# pth -> onnx
+python /mnt/kneron-mmdetection-main/tools/deployment/pytorch2onnx_kneron.py \
+    /mnt/kneron-mmdetection-main/configs/yolox/yolox_s_8x8_300e_ours2_img_norm.py \
+    /mnt/models/yolox_wade_199_torch18.pth \
+    --output-file /mnt/models/yolox_wade_199_torch18.onnx \
+    --skip-postprocess \
+    --shape 640 640
+
+# onnx test (old)
+python /mnt/kneron-mmdetection-main/tools/test_kneron.py \
+    /mnt/kneron-mmdetection-main/configs/yolox/yolox_s_8x8_300e_ours_img_norm.py \
+    /mnt/models/kneron_yolox_wade_epoch119_best.onnx \
+    --eval bbox \
+    --out-kneron json/output_onnx_11.json 
+
+# onnx test (new)
+python /mnt/kneron-mmdetection-main/tools/test_kneron.py \
+    /mnt/kneron-mmdetection-main/configs/yolox/yolox_s_8x8_300e_ours2_img_norm.py \
+    /mnt/models/yolox_wade_199_torch18.opt.onnx \
+    --eval bbox \
+    --out-kneron json/output_onnx_opt_10_torch18.json 
+
+
+# onnx.opt test
+python /mnt/kneron-mmdetection-main/tools/test_kneron.py \
+    /mnt/kneron-mmdetection-main/configs/yolox/yolox_s_8x8_300e_ours_img_norm.py \
+    /mnt/models/kneron_yolox_wade_epoch119_best.opt.onnx \
+    --eval bbox \
+    --out-kneron json/output_onnx_opt_11.json 
+
+# onnx -> onnx_opt -> nef
+python onnx2nef.py --step 1 --onnx_path /mnt/models/yolox_wade_194_torch17.onnx
+python onnx2nef.py --step 2 --onnx_path /mnt/models/yolox_wade_194_torch17.onnx --sample_image_path /mnt/dataset2/val --save_path /mnt/models/yolox_wade_194_torch17/
+
+
+# pth -> onnx (keneron offical)
+python /mnt/kneron-mmdetection-main/tools/deployment/pytorch2onnx_kneron.py \
+    /mnt/kneron-mmdetection-main/configs/yolox/yolox_s_8x8_300e_coco_img_norm.py \
+    /mnt/models/old/latest.pth \
+    --output-file /mnt/latest.onnx \
+    --skip-postprocess \
+    --shape 640 640
+
+
+//
+//                       _oo0oo_
+//                      o8888888o
+//                      88" . "88
+//                      (| -_- |)
+//                      0\  =  /0
+//                    ___/`---'\___
+//                  .' \\|     |// '.
+//                 / \\|||  :  |||// \
+//                / _||||| -:- |||||- \
+//               |   | \\\  -  /// |   |
+//               | \_|  ''\---/''  |_/ |
+//               \  .-\__  '-'  ___/-. /
+//             ___'. .'  /--.--\  `. .'___
+//          ."" '<  `.___\_<|>_/___.' >' "".
+//         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+//         \  \ `_.   \_ __\ /__ _/   .-` /  /
+//     =====`-.____`.___ \_____/___.-`___.-'=====
+//                       `=---='
+//
+//
+//     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//
+//               佛祖保佑         永无BUG
+//
+//
+//
